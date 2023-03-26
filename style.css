@@ -1,0 +1,48 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+main {
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Roboto", sans-serif;
+}
+
+form {
+  width: 600px;
+}
+
+.wrapper-input input,
+.cidade-uf input {
+  border-radius: 5px;
+  height: 30px;
+}
+
+.wrapper-input {
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper-btn,
+.wrapper-input,
+.cidade-uf {
+  margin: 20px 0 0 20px;
+}
+
+.wrapper-btn {
+  text-align: right;
+}
+
+.wrapper-btn button {
+  width: 60px;
+  height: 25px;
+}
+
+.cidade-uf {
+  display: flex;
+  justify-content: space-between;
+}
