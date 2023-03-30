@@ -23,8 +23,7 @@ const displayInputValue = function (result) {
 };
 
 const clearInputs = function () {
-  inCep.value =
-    inBairro.value =
+  inBairro.value =
     inComplemento.value =
     inLogradouro.value =
     inCodigoArea.value =
@@ -40,39 +39,34 @@ inCep.addEventListener("focusout", function (e) {
   if (cep.length > 8 || cep.length < 8) {
     cepError.style.color = "red";
     cepError.textContent = `Tamanho de CEP inválido (${cep.length}), esperado 8`;
+    clearInputs();
     return;
   }
 
-  fetch(`https://viacep.com.br/ws/${cep}/json/`)
-    .then((response) => {
-      if (!response.ok)
-        throw new Error(`Something went wrong (${response.status})`);
-      return response.json();
-    })
-    .then((data) => {
-      const { localidade, ddd, complemento, bairro, logradouro, uf } = data;
-      return {
-        localidade,
-        ddd,
-        complemento,
-        bairro,
-        logradouro,
-        uf,
-      };
-    })
-    .then((result) => {
-      displayInputValue(result);
-    })
-    .catch((error) => {
-      const msg = error.message;
-      const type = error.type;
-      const out = `${type} => ${msg}`;
-      console.error(out);
-    });
+  const getCepData = async function (cep) {
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+
+      if (!response.ok) throw new Error("asdas");
+
+      const data = await response.json();
+
+      if (!data) throw new Error(`Json error`);
+
+      displayInputValue(data);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  getCepData(cep);
 });
 
 btn.addEventListener("click", function (e) {
   // Não recarregar página
   e.preventDefault();
+  if (cepError.textContent)
+    cepError.textContent = "Não foi possivel submeter o formulário";
+  else inCep.value = "";
   clearInputs();
 });
