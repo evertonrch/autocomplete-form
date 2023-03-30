@@ -1,23 +1,47 @@
 //  viacep.com.br/ws/01001000/json/
 // Logradouro, Complemento, Bairro Localidade, UF, ddd
 
-const inCep = document.querySelector("input[name=cep]");
-const inBairro = document.querySelector("input[name=bairro]");
-const inComplemento = document.querySelector("input[name=complemento]");
-const inLogradouro = document.querySelector("input[name=logradouro]");
-const inCodigoArea = document.querySelector("input[name=ddd]");
-const inCidade = document.querySelector("input[name=cidade]");
-const inUf = document.querySelector("input[name=uf]");
+let inCep = document.querySelector("input[name=cep]");
+let inBairro = document.querySelector("input[name=bairro]");
+let inComplemento = document.querySelector("input[name=complemento]");
+let inLogradouro = document.querySelector("input[name=logradouro]");
+let inCodigoArea = document.querySelector("input[name=ddd]");
+let inCidade = document.querySelector("input[name=cidade]");
+let inUf = document.querySelector("input[name=uf]");
 
 const btn = document.querySelector(".btnEnviar");
 
-// https://viacep.com.br/ws/01001000/json/
+const cepError = document.querySelector(".cep-error");
 
-btn.addEventListener("click", function (e) {
-  // Não recarregar página
-  e.preventDefault();
+const displayInputValue = function (result) {
+  inBairro.value = result.bairro || "empty";
+  inLogradouro.value = result.logradouro || "empty";
+  inCidade.value = result.localidade || "empty";
+  inCodigoArea.value = result.ddd || "empty";
+  inUf.value = result.uf || "empty";
+  inComplemento.value = result.complemento || "empty";
+};
 
+const clearInputs = function () {
+  inCep.value =
+    inBairro.value =
+    inComplemento.value =
+    inLogradouro.value =
+    inCodigoArea.value =
+    inCidade.value =
+    inUf.value =
+      "";
+};
+
+inCep.addEventListener("focusout", function (e) {
   const cep = inCep.value;
+  cepError.textContent = "";
+
+  if (cep.length > 8 || cep.length < 8) {
+    cepError.style.color = "red";
+    cepError.textContent = `Tamanho de CEP inválido (${cep.length}), esperado 8`;
+    return;
+  }
 
   fetch(`https://viacep.com.br/ws/${cep}/json/`)
     .then((response) => {
@@ -37,7 +61,7 @@ btn.addEventListener("click", function (e) {
       };
     })
     .then((result) => {
-      console.log(result);
+      displayInputValue(result);
     })
     .catch((error) => {
       const msg = error.message;
@@ -45,4 +69,10 @@ btn.addEventListener("click", function (e) {
       const out = `${type} => ${msg}`;
       console.error(out);
     });
+});
+
+btn.addEventListener("click", function (e) {
+  // Não recarregar página
+  e.preventDefault();
+  clearInputs();
 });
